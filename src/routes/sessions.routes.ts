@@ -14,9 +14,15 @@ sessionRouter.post('/', async (request, response) => {
          password,
       });
 
-      delete user.password;
+      const userWithoutPassword = {
+         id: user.id,
+         name: user.name,
+         email: user.email,
+         created_at: user.created_at,
+         updated_at: user.updated_at,
+      };
 
-      return response.json({ user, token });
+      return response.json({ userWithoutPassword, token });
    } catch (err) {
       return response.status(400).json({ message: err.message });
    }
