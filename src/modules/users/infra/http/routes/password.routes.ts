@@ -1,11 +1,14 @@
 import { Router } from 'express';
 
-import SessionController from '../controllers/SessionController';
+import ForgotPasswordController from '../controllers/ForgotPasswordController';
+import ResetPasswordController from '../controllers/ResetPasswordController';
 
-const passwordController = new SessionController();
+const forgotPasswordController = new ForgotPasswordController();
+const resetPasswordController = new ResetPasswordController();
 
 const sessionRouter = Router();
 
-sessionRouter.post('/', passwordController.create);
+sessionRouter.post('/forgot', forgotPasswordController.create);
+sessionRouter.post('/reset', resetPasswordController.create);
 
 export default sessionRouter;
