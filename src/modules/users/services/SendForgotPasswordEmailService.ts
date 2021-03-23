@@ -5,7 +5,6 @@ import AppErrors from '@shared/errors/AppErrors';
 import IMailProvider from '@shared/container/providers/mailProvider/models/IEmailProvider';
 import IUserRepository from '../repositories/IUserRepository';
 import IUserTokenRepository from '../repositories/IUserTokenRepository';
-// import User from '../infra/typeorm/entities/User';
 
 interface IRequest {
    email: string;
@@ -33,10 +32,20 @@ class SendForgotPasswordEmailService {
 
       const { token } = await this.userTokenRepository.generate(user.id);
 
-      await this.mailProvider.sendEmail(
-         email,
-         `Pedido de recuperação de senha recebido: ${token}`,
-      );
+      await this.mailProvider.sendEmail({
+         to: {
+            name: user.name,
+            email: user.email,
+         },
+         subject: '[GoBarber] Recuperação de senha',
+         templateData: {
+            templates: 'Olá, {{name}}: {{token}}',
+            variables: {
+               name: user.name,
+               token,
+            },
+         },
+      });
    }
 }
 
