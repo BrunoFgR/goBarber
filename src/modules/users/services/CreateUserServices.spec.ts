@@ -7,16 +7,19 @@ import FakeHashProvider from '../providers/HashProvider/implementations/BCryptHa
 
 import FakeUserRepository from '../repositories/fakes/FakeUsersRepository';
 
+let fakeUsersRepository: FakeUserRepository;
+let fakeHashProvider: FakeHashProvider;
+let createUser: CreateUserService;
+
 describe('CreateUser', () => {
+   beforeEach(() => {
+      fakeUsersRepository = new FakeUserRepository();
+      fakeHashProvider = new FakeHashProvider();
+
+      createUser = new CreateUserService(fakeUsersRepository, fakeHashProvider);
+   });
+
    it('Should be able to create a new user', async () => {
-      const fakeUsersRepository = new FakeUserRepository();
-      const fakeHashProvider = new FakeHashProvider();
-
-      const createUser = new CreateUserService(
-         fakeUsersRepository,
-         fakeHashProvider,
-      );
-
       const user = await createUser.execute({
          email: 'bruno.figueiredo@oihandover.com',
          name: 'Bruno Figueiredo',
@@ -27,14 +30,6 @@ describe('CreateUser', () => {
    });
 
    it('Should not be able to create a new user with the same email', async () => {
-      const fakeUsersRepository = new FakeUserRepository();
-      const fakeHashProvider = new FakeHashProvider();
-
-      const createUser = new CreateUserService(
-         fakeUsersRepository,
-         fakeHashProvider,
-      );
-
       await createUser.execute({
          email: 'bruno.figueiredo@oihandover.com',
          name: 'Bruno Figueiredo',
