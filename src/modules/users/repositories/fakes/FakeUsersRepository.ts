@@ -2,6 +2,7 @@ import { uuid } from 'uuidv4';
 
 import IUserRepository from '@modules/users/repositories/IUserRepository';
 import ICreateUserDTO from '@modules/users/dtos/ICreateUserDTO';
+import IFindAllProvidersDTO from '@modules/users/dtos/IFindAllProvidersDTO';
 
 import User from '@modules/users/infra/typeorm/entities/User';
 
@@ -40,6 +41,16 @@ class UserRepository implements IUserRepository {
       );
 
       this.users[findIndex] = user;
+   }
+
+   public async findAllProviders({
+      except_user_id,
+   }: IFindAllProvidersDTO): Promise<User[]> {
+      if (except_user_id) {
+         return this.users.filter(allUsers => allUsers.id !== except_user_id);
+      }
+
+      return this.users;
    }
 }
 
