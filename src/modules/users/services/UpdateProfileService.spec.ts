@@ -39,6 +39,16 @@ describe('UpdateProfile', () => {
       expect(updatedUser.email).toBe('johntre@example.com');
    });
 
+   it('Should not be able to update a profile that non exist', async () => {
+      await expect(
+         updateProfile.execute({
+            user_id: 'user-non-exist',
+            email: 'test@example.com',
+            name: 'Test 2',
+         }),
+      ).rejects.toBeInstanceOf(AppErrors);
+   });
+
    it('Should not be able to change to another user email', async () => {
       await fakeUsersRepository.create({
          email: 'test@example.com',
@@ -77,6 +87,23 @@ describe('UpdateProfile', () => {
       });
 
       expect(updatedUser.password).toBe('123123');
+   });
+
+   it('Should not be able to update the password without to receive old_password', async () => {
+      const user = await fakeUsersRepository.create({
+         email: 'johndoe@example.com',
+         name: 'John Doe',
+         password: '12345',
+      });
+
+      await expect(
+         updateProfile.execute({
+            user_id: user.id,
+            email: 'johndoe@example.com',
+            name: 'John Doe',
+            password: '123123',
+         }),
+      ).rejects.toBeInstanceOf(AppErrors);
    });
 
    it('Should not be able to update the password to receive wrong old password', async () => {

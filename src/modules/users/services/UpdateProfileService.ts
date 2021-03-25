@@ -48,8 +48,6 @@ class UpdateProfileService {
       user.name = name;
       user.email = email;
 
-      await this.usersRepository.save(user);
-
       if (password && !old_password) {
          throw new AppErrors(
             'You must to inform the old password to set a new password',
@@ -68,6 +66,8 @@ class UpdateProfileService {
 
          user.password = await this.hashProvider.generateHash(password);
       }
+
+      await this.usersRepository.save(user);
 
       return user;
    }
